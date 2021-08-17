@@ -7,10 +7,14 @@ import * as d3 from "d3";
 
 import GraphModelFactory from "../../util/GraphModelFactory";
 import { drag, zoom, colors, tick } from "../../util/d3helper";
+import { useSelector } from "react-redux";
+import { selectFilter } from "../../store/slices/filterSlice";
 
 const updateIntervalMs = 5000;
 
 export default function Graph({ isDebug = false }) {
+  // filter from store
+  const filter = useSelector(selectFilter);
   // The data state
   const [data, setData] = useState(
     isDebug
@@ -26,6 +30,25 @@ export default function Graph({ isDebug = false }) {
 
   const svg = useRef();
   const root = useRef();
+
+  useEffect(() => {
+    d3.selectAll(".nodes")
+      .filter((d) => d.name.includes(filter.search.value))
+      .transition(500)
+      .style("opacity", 1);
+    d3.selectAll(".nodes")
+      .filter((d) => !d.name.includes(filter.search.value))
+      .transition(500)
+      .style("opacity", 0.1);
+    d3.selectAll(".link")
+      .filter((d) => d.data.isFiltered(filter))
+      .transition(500)
+      .style("stroke-opacity", 1);
+    d3.selectAll(".link")
+      .filter((d) => !d.data.isFiltered(filter))
+      .transition(500)
+      .style("stroke-opacity", 0);
+  }, [filter]);
 
   useEffect(() => {
     if (!isDebug) {
@@ -94,6 +117,7 @@ export default function Graph({ isDebug = false }) {
             .data(data.links[linkType], (d) => d.nid)
             .join("line")
             .attr("class", "link-" + linkType)
+            .attr("class", "link")
             .attr("stroke", function () {
               return linkColor[linkType];
             })
@@ -108,14 +132,11 @@ export default function Graph({ isDebug = false }) {
     }
   }, [data]);
 
-  
- 
-
   return (
     <svg ref={svg} width="100%" height="100%">
       <g ref={root}>
         <g>
-          {Object.keys(linkColor).map((x,i) => (
+          {Object.keys(linkColor).map((x, i) => (
             <g key={i} className={"links-" + x} />
           ))}
         </g>

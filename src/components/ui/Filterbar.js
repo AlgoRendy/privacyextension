@@ -56,14 +56,14 @@ export default function Filterbar() {
         <ListItemIcon>
             <FilterListIcon />
           </ListItemIcon>
-          <ListItemText primary="Methode"></ListItemText>
+          <ListItemText primary="Method"></ListItemText>
           {openMethode ? <ExpandLess /> : <ExpandMore />}
     </ListItem>
     <Collapse in={openMethode} timeout="auto" unmountOnExit>
     {methods.map((x, i) => (
         <ListItem dense key={i}>
           <ListItemIcon>
-            <Checkbox edge="start" checked={filter.methode[x]} onChange={() => dispatch(filterActions["methode_"+x]())} />
+            <Checkbox edge="start" checked={filter.method[x]} onChange={() => dispatch(filterActions["method_"+x]())} />
           </ListItemIcon>
           <ListItemText primary={x} />
         </ListItem>

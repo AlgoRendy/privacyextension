@@ -48,11 +48,11 @@ export default class Request {
         }
     }
 
-    isFiltered(filterObj){
+    isFiltered(filterObj) {
         if (filterObj === null){
             return true;
         }
-        if (filterObj.linkType[this.type] && filterObj.methodeType[this.method]) {
+        if (filterObj.type[this.type] && filterObj.method[this.method]) {
             return true
         }
         return false

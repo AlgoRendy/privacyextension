@@ -3,6 +3,9 @@ import { createSlice } from "@reduxjs/toolkit";
 export const filterSlice = createSlice({
   name: "filter",
   initialState: {
+    search: {
+      value: "",
+    },
     type: {
       stylesheet: true,
       script: true,
@@ -16,7 +19,7 @@ export const filterSlice = createSlice({
       csp_report: true,
       media: true,
     },
-    methode: {
+    method: {
       GET: true,
       POST: true,
       PUT: true,
@@ -61,35 +64,39 @@ export const filterSlice = createSlice({
     type_media: (state) => {
       state.type.media = !state.type.media;
     },
-    methode_GET: (state) => {
-      state.methode.GET = !state.methode.GET;
+    method_GET: (state) => {
+      state.method.GET = !state.method.GET;
     },
-    methode_POST: (state) => {
-      state.methode.POST = !state.methode.POST;
+    method_POST: (state) => {
+      state.method.POST = !state.method.POST;
     },
-    methode_PUT: (state) => {
-      state.methode.PUT = !state.methode.PUT;
+    method_PUT: (state) => {
+      state.method.PUT = !state.method.PUT;
     },
-    methode_DELETE: (state) => {
-      state.methode.DELETE = !state.methode.DELETE;
+    method_DELETE: (state) => {
+      state.method.DELETE = !state.method.DELETE;
     },
-    methode_HEAD: (state) => {
-      state.methode.HEAD = !state.methode.HEAD;
+    method_HEAD: (state) => {
+      state.method.HEAD = !state.method.HEAD;
     },
-    methode_CONNECT: (state) => {
-      state.methode.CONNECT = !state.methode.CONNECT;
+    method_CONNECT: (state) => {
+      state.method.CONNECT = !state.method.CONNECT;
     },
-    methode_OPTIONS: (state) => {
-      state.methode.OPTIONS = !state.methode.OPTIONS;
+    method_OPTIONS: (state) => {
+      state.method.OPTIONS = !state.method.OPTIONS;
     },
-    methode_TRACE: (state) => {
-      state.methode.TRACE = !state.methode.TRACE;
+    method_TRACE: (state) => {
+      state.method.TRACE = !state.method.TRACE;
+    },
+    search_update: (state, action) => {
+      state.search.value = action.payload;
     },
   },
 });
 
 //Actions to choose from
 export const {
+  search_update,
   type_stylesheet,
   type_script,
   type_main_frame,
@@ -101,14 +108,14 @@ export const {
   type_sub_frame,
   type_csp_report,
   type_media,
-  methode_GET,
-  methode_POST,
-  methode_PUT,
-  methode_DELETE,
-  methode_HEAD,
-  methode_CONNECT,
-  methode_OPTIONS,
-  methode_TRACE,
+  method_GET,
+  method_POST,
+  method_PUT,
+  method_DELETE,
+  method_HEAD,
+  method_CONNECT,
+  method_OPTIONS,
+  method_TRACE,
 } = filterSlice.actions;
 
 export const filterActions = filterSlice.actions;

@@ -3,37 +3,24 @@ import clsx from "clsx";
 import { makeStyles } from "@material-ui/core/styles";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import Drawer from "@material-ui/core/Drawer";
-import Box from "@material-ui/core/Box";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
 import List from "@material-ui/core/List";
 import Typography from "@material-ui/core/Typography";
 import Divider from "@material-ui/core/Divider";
 import IconButton from "@material-ui/core/IconButton";
-import Badge from "@material-ui/core/Badge";
 import Container from "@material-ui/core/Container";
-import Link from "@material-ui/core/Link";
 import MenuIcon from "@material-ui/icons/Menu";
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
-import NotificationsIcon from "@material-ui/icons/Notifications";
 import Graph from "./pages/Graph";
 import { Route } from "react-router-dom";
 import Analitics from "./pages/Analitics";
 import Sidebar from "./ui/Sidebar";
 import Settings from "./pages/Settings";
+import ListeningToUpdatesSwitch from "./ui/ListeningToUpdatesSwitch";
+import Filterbar from "./ui/Filterbar";
+import { ListSubheader } from "@material-ui/core";
 
-function Copyright() {
-  return (
-    <Typography variant="body2" color="textSecondary" align="center">
-      {"Copyright © "}
-      <Link color="inherit" href="https://material-ui.com/">
-        Your Website
-      </Link>{" "}
-      {new Date().getFullYear()}
-      {"."}
-    </Typography>
-  );
-}
 
 const drawerWidth = 240;
 
@@ -77,6 +64,7 @@ const useStyles = makeStyles((theme) => ({
   },
   drawerPaper: {
     position: "relative",
+    height: "100vh",
     whiteSpace: "nowrap",
     width: drawerWidth,
     transition: theme.transitions.create("width", {
@@ -98,6 +86,7 @@ const useStyles = makeStyles((theme) => ({
   appBarSpacer: theme.mixins.toolbar,
   content: {
     flexGrow: 1,
+    width: "100%",
     height: "100vh",
     overflow: "auto",
   },
@@ -150,11 +139,7 @@ export default function Dashboard() {
           >
             Privacy Graph
           </Typography>
-          <IconButton color="inherit">
-            <Badge badgeContent={4} color="secondary">
-              <NotificationsIcon />
-            </Badge>
-          </IconButton>
+          <ListeningToUpdatesSwitch isDebug={true} />
         </Toolbar>
       </AppBar>
       <Drawer
@@ -172,10 +157,15 @@ export default function Dashboard() {
         <Divider />
         <List><Sidebar /></List>
         <Divider />
+        <List aria-labelledby="nested-list-subheader"
+      subheader={
+        <ListSubheader component="div" id="nested-list-subheader">
+          Options
+        </ListSubheader>
+      }><Filterbar /></List>
       </Drawer>
       <main className={classes.content}>
-        <div className={classes.appBarSpacer} />
-        <Container maxWidth="xl">
+        <Container maxWidth="xl"className={classes.content} >
           <Route exact path="/">
             <Graph isDebug={true} />
           </Route>
@@ -185,9 +175,6 @@ export default function Dashboard() {
           <Route path="/settings">
             <Settings />
           </Route>
-          <Box pt={4}>
-            <Copyright />
-          </Box>
         </Container>
       </main>
     </div>

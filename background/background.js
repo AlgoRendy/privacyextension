@@ -24,7 +24,7 @@ chrome.webRequest.onBeforeSendHeaders.addListener(details => {
 
 
 setInterval(() => {
-    if (counter > 0) {
+    if (counter > 0 && logging) {
         chrome.storage.sync.get(['requests'],res => {
             chrome.storage.sync.set({'requests': res.requests+counter});
             counter = 0;

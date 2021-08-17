@@ -27,7 +27,6 @@ export default function Graph({ isDebug = false }) {
   const svg = useRef();
   const root = useRef();
 
-
   useEffect(() => {
     if (!isDebug) {
       var port = chrome.extension.connect({ name: "HttpRequests" });
@@ -57,7 +56,6 @@ export default function Graph({ isDebug = false }) {
     //adds zoom
     d3.select(svg.current).call(zoom(root.current));
     // adds navigatable background
-   
   }, []);
 
   useEffect(() => {
@@ -68,10 +66,10 @@ export default function Graph({ isDebug = false }) {
         "links" in data
       ) {
         const simulation = d3
-        .forceSimulation()
-        .force("link", d3.forceLink())
-        .force("charge", d3.forceManyBody())
-        .force("center", d3.forceCenter(100 / 2, 100 / 2))
+          .forceSimulation()
+          .force("link", d3.forceLink())
+          .force("charge", d3.forceManyBody())
+          .force("center", d3.forceCenter(100 / 2, 100 / 2));
         d3.select(root.current).call(drag(simulation));
         simulation.nodes(data.nodes);
         simulation
@@ -81,7 +79,7 @@ export default function Graph({ isDebug = false }) {
 
         d3.select(".nodes-container")
           .selectAll("circle")
-          .data(data.nodes,d => d.nid)
+          .data(data.nodes, (d) => d.nid)
           .join("circle")
           .attr("class", "nodes")
           .attr("r", 5)
@@ -93,7 +91,7 @@ export default function Graph({ isDebug = false }) {
         for (let linkType of Object.keys(data.links)) {
           d3.select(".links-" + linkType)
             .selectAll("line")
-            .data(data.links[linkType],d => d.nid)
+            .data(data.links[linkType], (d) => d.nid)
             .join("line")
             .attr("class", "link-" + linkType)
             .attr("stroke", function () {
@@ -103,19 +101,22 @@ export default function Graph({ isDebug = false }) {
             .call(drag(simulation));
         }
         simulation.on("tick", tick);
-        simulation.alpha(0.3).restart()
+        simulation.alpha(0.3).restart();
       }
     } catch (e) {
       console.log(e);
     }
   }, [data]);
 
+  
+ 
+
   return (
-    <svg ref={svg} width="500" height="500">
+    <svg ref={svg} width="100%" height="100%">
       <g ref={root}>
         <g>
-          {Object.keys(linkColor).map((x) => (
-            <g className={"links-" + x} />
+          {Object.keys(linkColor).map((x,i) => (
+            <g key={i} className={"links-" + x} />
           ))}
         </g>
         <g className="nodes-container" />

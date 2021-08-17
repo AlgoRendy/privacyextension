@@ -13,3 +13,4 @@ export const linkColor = {
     media: 'purple'
 };
 
+export const methods = ["GET","POST","PUT","DELETE","HEAD","CONNECT","OPTIONS","TRACE"];

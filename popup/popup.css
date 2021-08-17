@@ -1,0 +1,39 @@
+.d-flex {
+    display: flex;
+}
+
+.d-row-wrap {
+    flex-flow: row wrap;
+}
+
+.d-row-nowrap {
+    flex-flow: row nowrap;
+}
+
+.d-column-nowrap {
+    flex-flow: column nowrap;
+}
+
+.d-column-wrap {
+    flex-flow: column wrap;
+}
+
+.align-center {
+    align-items: center;
+}
+
+.justify-center {
+    justify-content: center;
+}
+
+.justify-space-between {
+    justify-content: space-evenly;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.circle {
+    border-radius: 50%;
+}

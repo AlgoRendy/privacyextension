@@ -4,12 +4,49 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- import of material design -->
+    <link rel="stylesheet" href="./material.min.css">
+    <script src="./material.min.js"></script>
+    <link rel="stylesheet" href="./font.css">
+    <link rel="stylesheet" href="./popup.css">
+    
     <title>Popup</title>
 </head>
 <body>
-    <h1>Start registering your BrowsingRequests</h1>
-    <br>
-    <br>
-    <button>Hallo Welt</button>
+    <div class="demo-card-wide mdl-card mdl-shadow--2dp">
+        <div class="d-flex d-column-wrap align-center justify-center">
+            <br>
+            <!--Counter Of Requests-->
+            <div class="circle text-center background mdl-shadow--2dp" style="width: 150px; height: 150px;">
+                <div>
+                    <div id="requests_amount" style="font-size: 30px; text-align: center;
+                    vertical-align: middle;
+                    line-height: 150px;font-weight: bold;">0</div>
+                    
+                </div>
+               
+            </div>
+            <br>
+            <div style="font-size: 20px;">Requests to analyze:</div>
+            <br>
+            <div>
+                <button id="go-to-options" class=" mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored" style="width: 100%;">
+                    Analyze
+                </button>
+            </div>
+            <br>
+            <div class="d-flex d-row-nowrap justify-space-between align-center" style="width: 100%;">
+                <span style="font-size: small;">
+                  Start monitoring your requests
+                </span>
+                <input  type="checkbox" id="switch-id" />
+            </div>
+            <br>
+        </div>
+       
+       
+      </div>
+    <!-- import of popup logic -->
+    <script src="./popup.js"></script>
 </body>
 </html>

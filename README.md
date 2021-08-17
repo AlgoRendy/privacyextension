@@ -1,6 +1,6 @@
-# Getting Started with Create React App
+# Privacy Graph Extension
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This project is created fro my bachelor thesis. You can use this extension to analyze your HTTP-requests in browsing sessions. You can also flag malicisous domains and block requests on simple metrics.
 
 ## Available Scripts
 

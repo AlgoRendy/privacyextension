@@ -1,5 +1,5 @@
 /* eslint-disable no-undef */
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import React from "react";
 import { linkColor } from "../../util/constants";
 // import testData from "../../test.json";
@@ -15,49 +15,19 @@ export default function Graph({ isDebug = false }) {
   const filter = useSelector(selectFilter);
 
   // The data state
-  const [data, setData] = useState(GraphModel.getGraph());
-  useEffect(() => {
-    chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-      console.log(request);
-    });
-  }, []);
-  // HttpRequests from the chrome browser
-  const httpRequests = useRef([]);
-
-  // buffers requests
-  const buffer = useRef([]);
 
   const svg = useRef();
   const root = useRef();
-
-  useEffect(() => {
-    d3.selectAll(".nodes")
-      .filter((d) => d.name.includes(filter.search.value))
-      .transition(500)
-      .style("opacity", 1);
-    d3.selectAll(".nodes")
-      .filter((d) => !d.name.includes(filter.search.value))
-      .transition(500)
-      .style("opacity", 0.1);
-    d3.selectAll(".link")
-      .filter((d) => d.data.isFiltered(filter))
-      .transition(500)
-      .style("stroke-opacity", 1);
-    d3.selectAll(".link")
-      .filter((d) => !d.data.isFiltered(filter))
-      .transition(500)
-      .style("stroke-opacity", 0);
-  }, [filter]);
 
   // initial effect
   useEffect(() => {
     //adds zoom
     d3.select(svg.current).call(zoom(root.current));
-    // adds navigatable background
-  }, []);
+    var port = chrome.runtime.connect({ name: "Requests" });
+    port.onMessage.addListener((msg) => {
+      GraphModel.addChunkToExistingGraph(msg.requests);
+      const data = GraphModel.getGraph();
 
-  useEffect(() => {
-    try {
       const simulation = d3
         .forceSimulation()
         .force("link", d3.forceLink())
@@ -96,10 +66,27 @@ export default function Graph({ isDebug = false }) {
       }
       simulation.on("tick", tick);
       simulation.alpha(0.3).restart();
-    } catch (e) {
-      console.log(e);
-    }
-  }, [data]);
+    });
+  }, []);
+
+  useEffect(() => {
+    d3.selectAll(".nodes")
+      .filter((d) => d.name.includes(filter.search.value))
+      .transition(500)
+      .style("opacity", 1);
+    d3.selectAll(".nodes")
+      .filter((d) => !d.name.includes(filter.search.value))
+      .transition(500)
+      .style("opacity", 0.1);
+    d3.selectAll(".link")
+      .filter((d) => d.data.isFiltered(filter))
+      .transition(500)
+      .style("stroke-opacity", 1);
+    d3.selectAll(".link")
+      .filter((d) => !d.data.isFiltered(filter))
+      .transition(500)
+      .style("stroke-opacity", 0);
+  }, [filter]);
 
   return (
     <svg ref={svg} width="100%" height="100%">

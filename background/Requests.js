@@ -3,6 +3,12 @@
 const Requests = (() => {
   let requestsQueue = [];
   let chunkSize = 20;
+  let port = undefined;
+
+  chrome.runtime.onConnect.addListener((connectedPort) => {
+    console.log("Front-End Connected");
+    port = connectedPort;
+  });
 
   let scheduleWorker = (delay) => setTimeout(updateRequests, delay);
 
@@ -36,7 +42,7 @@ const Requests = (() => {
       });
     });
 
-    chrome.runtime.sendMessage({ requests: requests });
+    port && port.postMessage({ requests: requests });
   };
   return {
     add: (request) => {

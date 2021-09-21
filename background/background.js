@@ -86,7 +86,6 @@ const Background = (() => {
       requests[requestId] = Object.assign(tmp, obj);
     },
     pushToQueue: (requestId) => {
-      console.log(requestId);
       Requests.add(Background.getRequest(requestId));
       delete Background.getRequest(requestId);
     },

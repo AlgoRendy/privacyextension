@@ -1,53 +1,109 @@
+/* eslint-disable no-unused-expressions */
 /* eslint-disable no-undef */
-var buffer = []
-var logging = false;
+const Background = (() => {
+  const urlFilter = { urls: ["http://*/*", "https://*/*"] };
+  let requests = {};
 
-var counter = 0;
+  const load = (() => {
+    chrome.webRequest.onBeforeRequest.addListener(
+      (details) => {
+        if (details.tabId < 0) {
+          return;
+        }
 
-chrome.runtime.onInstalled.addListener(function() {
-    chrome.storage.sync.set({'logging': false,'requests': 0})
-});
+        if (details.hasOwnProperty("requestBody")) {
+          delete details.requestBody;
+        }
 
+        window.dispatchEvent(
+          new CustomEvent("background:main:onRequest", {
+            detail: { request: details },
+          })
+        );
+        Background.setRequest(details.requestId, details);
 
-chrome.runtime.onStartup.addListener(() =>{
-    // start of each session it sets the the logging variable to false and the amount of reqeuests monitored to zero
-    chrome.storage.sync.set({'logging': false,'requests': 0})
-})
+        Background.getCompletedTabFromId(details.tabId, (tab) => {
+          Background.setRequest(details.requestId, {
+            source: tab.url,
+            complete: true,
+          });
 
-chrome.webRequest.onBeforeSendHeaders.addListener(details => {
-    if (logging){
-        counter++;
-        buffer.push(details);
-    }
-    return details;
-},{urls: ["<all_urls>"]},['requestHeaders', 'extraHeaders'])
-
-
-setInterval(() => {
-    if (counter > 0 && logging) {
-        chrome.storage.sync.get(['requests'],res => {
-            chrome.storage.sync.set({'requests': res.requests+counter});
-            counter = 0;
+          Background.getRequest(details.requestId).requestHeaders &&
+            Background.getRequest(details.requestId).response &&
+            Background.pushToQueue(details.requestId);
         });
-    }
-    
-},5000)
+      },
+      urlFilter,
+      ["requestBody"]
+    );
 
+    chrome.webRequest.onBeforeSendHeaders.addListener(
+      (details) => {
+        Background.setRequest(details.requestId, {
+          requestHeaders: details.requestHeaders,
+        });
+        Background.getRequest(details.requestId).complete &&
+          Background.getRequest(details.requestId).response &&
+          Background.pushToQueue(details.requestId);
+      },
+      urlFilter,
+      ["requestHeaders", "extraHeaders"]
+    );
 
-chrome.runtime.onConnect.addListener(port => {
-    port.onMessage.addListener(function(msg){
-        // recieved ping from frontned
-        port.postMessage(buffer);
-        // clears buffer
-        buffer = [];
-    })
-})
+    chrome.webRequest.onResponseStarted.addListener(
+      (details) => {
+        Background.setRequest(details.requestId, { response: details });
 
+        Background.getRequest(details.requestId).complete &&
+          Background.getRequest(details.requestId).requestHeaders &&
+          Background.pushToQueue(details.requestId);
+      },
+      urlFilter,
+      ["responseHeaders", "extraHeaders"]
+    );
 
+    chrome.webRequest.onCompleted.addListener(
+      (details) => Background.setRequest(details.requestId, { success: true }),
+      urlFilter
+    );
 
+    chrome.webRequest.onErrorOccurred.addListener(
+      (details) => Background.setRequest(details.requestId, { success: false }),
+      urlFilter
+    );
 
-chrome.storage.onChanged.addListener(function(changes) {
-    if ('logging' in changes){
-        logging = changes.logging.newValue;
-    }
-});
+    window.dispatchEvent(
+      new CustomEvent("background:main:loaded", { detail: {} })
+    );
+    return () => true;
+  })();
+
+  return {
+    isLoaded: () => load(),
+    getRequest: (requestId) => requests[requestId],
+    setRequest: (requestId, obj) => {
+      let tmp = requests[requestId] ? requests[requestId] : {};
+      requests[requestId] = Object.assign(tmp, obj);
+    },
+    pushToQueue: (requestId) => {
+      console.log(requestId);
+      Requests.add(Background.getRequest(requestId));
+      delete Background.getRequest(requestId);
+    },
+    getCompletedTabFromId: (tabId, callback) => {
+      try {
+        chrome.tabs.get(tabId, function (tab) {
+          if (chrome.runtime.lastError || typeof tab === "undefined") {
+            return;
+          } else {
+            callback(tab);
+          }
+        });
+      } catch (err) {
+        if (err) {
+          callback(null);
+        }
+      }
+    },
+  };
+})();

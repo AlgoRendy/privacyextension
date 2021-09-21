@@ -2,26 +2,25 @@
 import { useEffect, useRef, useState } from "react";
 import React from "react";
 import { linkColor } from "../../util/constants";
-import testData from "../../test.json";
+// import testData from "../../test.json";
 import * as d3 from "d3";
 
-import GraphModelFactory from "../../util/GraphModelFactory";
+import { GraphModel } from "../../util/graphModel";
 import { drag, zoom, colors, tick } from "../../util/d3helper";
 import { useSelector } from "react-redux";
 import { selectFilter } from "../../store/slices/filterSlice";
 
-const updateIntervalMs = 5000;
-
 export default function Graph({ isDebug = false }) {
   // filter from store
   const filter = useSelector(selectFilter);
-  // The data state
-  const [data, setData] = useState(
-    isDebug
-      ? GraphModelFactory.convertBrowsingDataToJSONGraph(testData)
-      : { nodes: [], links: [] }
-  );
 
+  // The data state
+  const [data, setData] = useState(GraphModel.getGraph());
+  useEffect(() => {
+    chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+      console.log(request);
+    });
+  }, []);
   // HttpRequests from the chrome browser
   const httpRequests = useRef([]);
 
@@ -50,30 +49,6 @@ export default function Graph({ isDebug = false }) {
       .style("stroke-opacity", 0);
   }, [filter]);
 
-  useEffect(() => {
-    if (!isDebug) {
-      var port = chrome.extension.connect({ name: "HttpRequests" });
-      port.onMessage.addListener(function (requests) {
-        console.log(requests);
-        buffer.current = buffer.current.concat(requests);
-        httpRequests.current = httpRequests.current.concat(buffer.current);
-        if (buffer.current.length > 0) {
-          const [new_graph, update] = GraphModelFactory.addToExistingGraph(
-            buffer.current,
-            data
-          );
-          update && setData(new_graph);
-          buffer.current = [];
-        }
-      });
-      const interval = setInterval(() => {
-        if (port) {
-          port.postMessage("ping");
-        }
-      }, updateIntervalMs);
-      return () => clearInterval(interval);
-    }
-  }, [data, isDebug]);
   // initial effect
   useEffect(() => {
     //adds zoom
@@ -83,50 +58,44 @@ export default function Graph({ isDebug = false }) {
 
   useEffect(() => {
     try {
-      if (
-        (data !== null || data !== undefined) &&
-        "nodes" in data &&
-        "links" in data
-      ) {
-        const simulation = d3
-          .forceSimulation()
-          .force("link", d3.forceLink())
-          .force("charge", d3.forceManyBody())
-          .force("center", d3.forceCenter(100 / 2, 100 / 2));
-        d3.select(root.current).call(drag(simulation));
-        simulation.nodes(data.nodes);
-        simulation
-          .force("link")
-          .links(Object.values(data.links).reduce((x, y) => x.concat(y), []));
-        let color = colors(data.nodes.length);
+      const simulation = d3
+        .forceSimulation()
+        .force("link", d3.forceLink())
+        .force("charge", d3.forceManyBody())
+        .force("center", d3.forceCenter(100 / 2, 100 / 2));
+      d3.select(root.current).call(drag(simulation));
+      simulation.nodes(data.nodes);
+      simulation
+        .force("link")
+        .links(Object.values(data.links).reduce((x, y) => x.concat(y), []));
+      let color = colors(data.nodes.length);
 
-        d3.select(".nodes-container")
-          .selectAll("circle")
-          .data(data.nodes, (d) => d.nid)
-          .join("circle")
-          .attr("class", "nodes")
-          .attr("r", 5)
-          .attr("fill", function (d, i) {
-            return color(i);
+      d3.select(".nodes-container")
+        .selectAll("circle")
+        .data(data.nodes, (d) => d.nid)
+        .join("circle")
+        .attr("class", "nodes")
+        .attr("r", (d) => d.in / 30 + 5)
+        .attr("fill", function (d, i) {
+          return color(i);
+        })
+        .call(drag(simulation));
+
+      for (let linkType of Object.keys(data.links)) {
+        d3.select(".links-" + linkType)
+          .selectAll("line")
+          .data(data.links[linkType], (d) => d.nid)
+          .join("line")
+          .attr("class", "link-" + linkType)
+          .attr("class", "link")
+          .attr("stroke", function () {
+            return linkColor[linkType];
           })
+          .attr("stroke-width", (d) => 1 + d.amt / 50)
           .call(drag(simulation));
-
-        for (let linkType of Object.keys(data.links)) {
-          d3.select(".links-" + linkType)
-            .selectAll("line")
-            .data(data.links[linkType], (d) => d.nid)
-            .join("line")
-            .attr("class", "link-" + linkType)
-            .attr("class", "link")
-            .attr("stroke", function () {
-              return linkColor[linkType];
-            })
-            .attr("stroke-width", 1)
-            .call(drag(simulation));
-        }
-        simulation.on("tick", tick);
-        simulation.alpha(0.3).restart();
       }
+      simulation.on("tick", tick);
+      simulation.alpha(0.3).restart();
     } catch (e) {
       console.log(e);
     }

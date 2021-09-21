@@ -3,7 +3,10 @@
   "version": "0.0.1",
   "manifest_version": 2,
   "background": {
-    "scripts": ["background.js"],
+    "scripts": [
+      "Requests.js",
+      "background.js"
+    ],
     "persistent": true
   },
   "browser_action": {
@@ -11,12 +14,13 @@
     "default_popup": "/popup/popup.html"
   },
   "permissions": [
-    "storage",
-    "activeTab",
     "background",
-    "tabs",
     "webRequest",
-    "webRequestBlocking",
+    "storage",
+    "unlimitedStorage",
+    "downloads",
+    "activeTab",
+    "tabs",
     "<all_urls>"
   ],
   "options_page": "index.html"

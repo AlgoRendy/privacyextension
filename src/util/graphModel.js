@@ -1,5 +1,7 @@
 /* eslint-disable eqeqeq */
 import Request from "./request";
+import DuckDuckGoTracker from "../resources/DuckDuckGoTracker";
+import EasyPrivacyTracker from "../resources/EasyPrivacyTracker";
 
 // eslint-disable-next-line no-extend-native
 String.prototype.hashCode = function () {
@@ -32,6 +34,11 @@ export const GraphModel = (() => {
       media: [],
     },
   };
+
+  const domainName = (hostname) => hostname.split(".").slice(-2).join(".");
+  const isTracker = (hostname, dataset) =>
+    typeof dataset[domainName(hostname)] !== "undefined";
+
   const setLinksAndNodes = (links, nodes) => {
     graph.nodes = nodes;
     graph.links = links;
@@ -54,10 +61,14 @@ export const GraphModel = (() => {
       return existingNode;
     } else {
       const node = {
+        id: url.hashCode(),
         nid: url.hashCode(),
         name: url,
         in: inD,
         out: outD,
+        // Domain Specific tracker detection
+        isEasyPrivacyTracker: isTracker(url, EasyPrivacyTracker),
+        isDuckDuckGoTracker: isTracker(url, DuckDuckGoTracker),
       };
       graph.nodes.push(node);
       return node;
@@ -75,8 +86,10 @@ export const GraphModel = (() => {
       link.amt += 1;
     } else {
       const link = {
+        id: (sourceNode.name + destinationNode.name).hashCode(),
         nid: (sourceNode.name + destinationNode.name).hashCode(),
         type: request.type,
+        method: request.method,
         source: sourceNode,
         target: destinationNode,
         name: sourceNode.name + " -> " + destinationNode.name,

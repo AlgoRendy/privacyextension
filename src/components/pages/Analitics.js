@@ -1,4 +1,11 @@
-import { Grid, Box, AppBar, Paper, Typography } from "@material-ui/core";
+import {
+  Grid,
+  Box,
+  AppBar,
+  Paper,
+  Typography,
+  Toolbar,
+} from "@material-ui/core";
 import Tab from "@material-ui/core/Tab";
 import TabContext from "@material-ui/lab/TabContext";
 import TabList from "@material-ui/lab/TabList";
@@ -9,6 +16,7 @@ import { selectGraph } from "../../store/slices/graphSlice";
 import { DataGrid } from "@material-ui/data-grid";
 import { GraphModel } from "../../util/graphModel";
 import { linkColor } from "../../util/constants";
+import CardStats from "@bit/creative-tim.argon-dashboard-react.card-stats";
 
 const nodeColumns = [
   { field: "name", headerName: "Domain", minWidth: 200, flex: 1 },
@@ -54,38 +62,87 @@ export default function Analitics() {
       <br />
       <br />
       <br />
-      <Grid container direction="row" spacing={2}>
+      <Grid
+        container
+        direction="row"
+        spacing={2}
+        alignItems="center"
+        justifyContent="center"
+      >
+        <Grid item xs={3}>
+          <CardStats
+            style={{ marginTop: 20 }}
+            title="Nodes"
+            valueTotal={GraphModel.getTotalNodes()}
+          />
+        </Grid>
+        <Grid item xs={3}>
+          <CardStats
+            style={{ marginTop: 20 }}
+            title="Connections"
+            valueTotal={GraphModel.getTotalLinks()}
+          />
+        </Grid>
+        <Grid item xs={3}>
+          <CardStats
+            style={{ marginTop: 20 }}
+            title="Easy Privacy Tracker"
+            valueTotal={GraphModel.getEasyPrivcay()}
+          />
+        </Grid>
+        <Grid item xs={3}>
+          <CardStats
+            style={{ marginTop: 20 }}
+            title="DuckDuckGo Tracker"
+            valueTotal={GraphModel.getDuckDuckGo()}
+          />
+        </Grid>
         <Grid item xs={12}>
           <Paper elevation={3}>
-            <Typography variant="h4">Node specific view</Typography>
+            <AppBar position="static">
+              <Toolbar>
+                <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+                  Node View
+                </Typography>
+              </Toolbar>
+            </AppBar>
             <br />
             <div style={{ height: 400, width: "100%" }}>
               <DataGrid
                 rows={GraphModel.getGraph().nodes}
                 columns={nodeColumns}
                 pageSize={5}
-                rowsPerPageOptions={[5]}
+                rowsPerPageOptions={[5, 10, 20]}
               />
             </div>
           </Paper>
         </Grid>
         <Grid item xs={12}>
           <Paper elevation={3}>
-            <Typography variant="h4">Connection specific view</Typography>
-            <br />
             <Box sx={{ width: "100%", typography: "body1" }}>
               <TabContext value={value}>
                 <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
                   <AppBar position="static">
-                    <TabList
-                      onChange={handleChange}
-                      variant="scrollable"
-                      scrollButtons="auto"
-                    >
-                      {Object.keys(linkColor).map((link) => (
-                        <Tab label={link} value={link} />
-                      ))}
-                    </TabList>
+                    <Toolbar>
+                      <Typography
+                        variant="h6"
+                        component="div"
+                        sx={{ flexGrow: 1 }}
+                      >
+                        Connection View
+                      </Typography>
+                    </Toolbar>
+                    <Toolbar>
+                      <TabList
+                        onChange={handleChange}
+                        variant="scrollable"
+                        scrollButtons="auto"
+                      >
+                        {Object.keys(linkColor).map((link) => (
+                          <Tab label={link} value={link} />
+                        ))}
+                      </TabList>
+                    </Toolbar>
                   </AppBar>
                 </Box>
                 {Object.keys(linkColor).map((link) => (
@@ -95,7 +152,7 @@ export default function Analitics() {
                         rows={GraphModel.getGraph().links[link]}
                         columns={linkColumns}
                         pageSize={5}
-                        rowsPerPageOptions={[5]}
+                        rowsPerPageOptions={[5, 10, 20]}
                       />
                     </div>
                   </TabPanel>

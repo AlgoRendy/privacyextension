@@ -15,7 +15,6 @@ String.prototype.hashCode = function () {
 
 export default class Request {
   constructor(request) {
-    this.hashCode = JSON.stringify(request).hashCode();
     this.requestHeaders = request["requestHeaders"];
     this.frameId = request["frameId"];
     this.method = request["method"];

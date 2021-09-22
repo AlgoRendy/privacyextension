@@ -19,7 +19,6 @@ import SearchIcon from "@material-ui/icons/Search";
 import Analitics from "./pages/Analitics";
 import Sidebar from "./ui/Sidebar";
 import Settings from "./pages/Settings";
-import ListeningToUpdatesSwitch from "./ui/ListeningToUpdatesSwitch";
 import Filterbar from "./ui/Filterbar";
 import InputBase from "@material-ui/core/InputBase";
 import { ListSubheader } from "@material-ui/core";
@@ -27,6 +26,12 @@ import { filterActions } from "../store/slices/filterSlice";
 import { useDispatch } from "react-redux";
 import { GraphModel } from "../util/graphModel";
 import { update_graph } from "../store/slices/graphSlice";
+import {
+  AddPhotoAlternate,
+  ArrowDownward,
+  ArrowUpward,
+} from "@material-ui/icons";
+import { saveSvgAsPng } from "save-svg-as-png";
 
 const drawerWidth = 240;
 
@@ -166,6 +171,43 @@ export default function Dashboard() {
     });
   }, [dispatch]);
 
+  const exportToJsonFile = () => {
+    let dataUri =
+      "data:application/json;charset=utf-8," +
+      encodeURIComponent(GraphModel.exportGraph());
+
+    let exportFileDefaultName = "graph.json";
+
+    let linkElement = document.createElement("a");
+    linkElement.setAttribute("href", dataUri);
+    linkElement.setAttribute("download", exportFileDefaultName);
+    linkElement.click();
+  };
+
+  const importJsonToGraph = () => {
+    let uploadElement = document.createElement("input");
+    uploadElement.type = "file";
+    uploadElement.click();
+    uploadElement.onchange = () => {
+      var files = uploadElement.files;
+      console.log(files);
+      if (files.length <= 0) {
+        return false;
+      }
+      var file = uploadElement.files[0];
+      if (file) {
+        var reader = new FileReader();
+        reader.readAsText(file, "UTF-8");
+        reader.onload = function (evt) {
+          GraphModel.importGraph(JSON.parse(evt.target.result));
+        };
+        reader.onerror = function (evt) {
+          alert("Error uploading File.");
+        };
+      }
+    };
+  };
+
   return (
     <div className={classes.root}>
       <CssBaseline />
@@ -211,7 +253,31 @@ export default function Dashboard() {
               }
             />
           </div>
-          <ListeningToUpdatesSwitch isDebug={true} />
+          <IconButton
+            color="inherit"
+            aria-label="export viewport as png"
+            onClick={() => {
+              saveSvgAsPng(document.getElementById("graph"), "graph.png", {
+                backgroundColor: "#ffffff",
+              });
+            }}
+          >
+            <AddPhotoAlternate />
+          </IconButton>
+          <IconButton
+            color="inherit"
+            aria-label="export graph as json"
+            onClick={exportToJsonFile}
+          >
+            <ArrowDownward />
+          </IconButton>
+          <IconButton
+            color="inherit"
+            aria-label="export graph as json"
+            onClick={importJsonToGraph}
+          >
+            <ArrowUpward />
+          </IconButton>
         </Toolbar>
       </AppBar>
       <Drawer

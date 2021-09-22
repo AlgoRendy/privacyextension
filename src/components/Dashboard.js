@@ -1,6 +1,7 @@
-import React from "react";
+/* eslint-disable no-undef */
+import React, { useEffect } from "react";
 import clsx from "clsx";
-import {alpha, makeStyles } from "@material-ui/core/styles";
+import { alpha, makeStyles } from "@material-ui/core/styles";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import Drawer from "@material-ui/core/Drawer";
 import AppBar from "@material-ui/core/AppBar";
@@ -14,17 +15,18 @@ import MenuIcon from "@material-ui/icons/Menu";
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
 import Graph from "./pages/Graph";
 import { Route } from "react-router-dom";
-import SearchIcon from '@material-ui/icons/Search';
+import SearchIcon from "@material-ui/icons/Search";
 import Analitics from "./pages/Analitics";
 import Sidebar from "./ui/Sidebar";
 import Settings from "./pages/Settings";
 import ListeningToUpdatesSwitch from "./ui/ListeningToUpdatesSwitch";
 import Filterbar from "./ui/Filterbar";
-import InputBase from '@material-ui/core/InputBase';
+import InputBase from "@material-ui/core/InputBase";
 import { ListSubheader } from "@material-ui/core";
 import { filterActions } from "../store/slices/filterSlice";
 import { useDispatch } from "react-redux";
-
+import { GraphModel } from "../util/graphModel";
+import { update_graph } from "../store/slices/graphSlice";
 
 const drawerWidth = 240;
 
@@ -39,40 +41,40 @@ const useStyles = makeStyles((theme) => ({
     paddingRight: 24, // keep right padding when drawer closed
   },
   search: {
-    position: 'relative',
+    position: "relative",
     borderRadius: theme.shape.borderRadius,
     backgroundColor: alpha(theme.palette.common.white, 0.15),
-    '&:hover': {
+    "&:hover": {
       backgroundColor: alpha(theme.palette.common.white, 0.25),
     },
     marginRight: theme.spacing(2),
     marginLeft: 0,
-    width: '100%',
-    [theme.breakpoints.up('sm')]: {
+    width: "100%",
+    [theme.breakpoints.up("sm")]: {
       marginLeft: theme.spacing(3),
-      width: 'auto',
+      width: "auto",
     },
   },
   searchIcon: {
     padding: theme.spacing(0, 2),
-    height: '100%',
-    position: 'absolute',
-    pointerEvents: 'none',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
+    height: "100%",
+    position: "absolute",
+    pointerEvents: "none",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
   },
   inputRoot: {
-    color: 'inherit',
+    color: "inherit",
   },
   inputInput: {
     padding: theme.spacing(1, 1, 1, 0),
     // vertical padding + font size from searchIcon
     paddingLeft: `calc(1em + ${theme.spacing(4)}px)`,
-    transition: theme.transitions.create('width'),
-    width: '100%',
-    [theme.breakpoints.up('md')]: {
-      width: '20ch',
+    transition: theme.transitions.create("width"),
+    width: "100%",
+    [theme.breakpoints.up("md")]: {
+      width: "20ch",
     },
   },
   toolbarIcon: {
@@ -145,7 +147,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function Dashboard() {
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
   const classes = useStyles();
   const [open, setOpen] = React.useState(true);
   const handleDrawerOpen = () => {
@@ -154,6 +156,15 @@ export default function Dashboard() {
   const handleDrawerClose = () => {
     setOpen(false);
   };
+
+  // Start listening for updates from background script
+  useEffect(() => {
+    var port = chrome.runtime.connect();
+    port.onMessage.addListener((msg) => {
+      GraphModel.addChunkToExistingGraph(msg.requests);
+      dispatch(update_graph());
+    });
+  }, [dispatch]);
 
   return (
     <div className={classes.root}>
@@ -194,8 +205,10 @@ export default function Dashboard() {
                 root: classes.inputRoot,
                 input: classes.inputInput,
               }}
-              inputProps={{ 'aria-label': 'search' }}
-              onChange={e => dispatch(filterActions.search_update(e.target.value))}
+              inputProps={{ "aria-label": "search" }}
+              onChange={(e) =>
+                dispatch(filterActions.search_update(e.target.value))
+              }
             />
           </div>
           <ListeningToUpdatesSwitch isDebug={true} />
@@ -214,17 +227,23 @@ export default function Dashboard() {
           </IconButton>
         </div>
         <Divider />
-        <List><Sidebar /></List>
+        <List>
+          <Sidebar />
+        </List>
         <Divider />
-        <List aria-labelledby="nested-list-subheader"
-      subheader={
-        <ListSubheader component="div" id="nested-list-subheader">
-          Options
-        </ListSubheader>
-      }><Filterbar /></List>
+        <List
+          aria-labelledby="nested-list-subheader"
+          subheader={
+            <ListSubheader component="div" id="nested-list-subheader">
+              Options
+            </ListSubheader>
+          }
+        >
+          <Filterbar />
+        </List>
       </Drawer>
       <main className={classes.content}>
-        <Container maxWidth="xl"className={classes.content} >
+        <Container maxWidth="xl" className={classes.content}>
           <Route exact path="/">
             <Graph isDebug={true} />
           </Route>

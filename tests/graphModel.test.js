@@ -263,7 +263,7 @@ test("Load Graph", () => {
   const exportedGraph = GraphModel.exportGraph();
   GraphModel.resetGraph();
   initialGraph();
-  GraphModel.loadGraph(exportedGraph);
+  GraphModel.importGraph(JSON.parse(exportedGraph));
   expect(GraphModel.getGraph().nodes.length).toBe(2);
   expect(GraphModel.getGraph().links.script.length).toBe(1);
   expect(GraphModel.getGraph().links.font.length).toBe(0);

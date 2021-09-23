@@ -39,11 +39,6 @@ export const GraphModel = (() => {
   const isTracker = (hostname, dataset) =>
     typeof dataset[domainName(hostname)] !== "undefined";
 
-  const setLinksAndNodes = (links, nodes) => {
-    graph.nodes = nodes;
-    graph.links = links;
-  };
-
   const getExistingNodeByHash = (hash) => {
     return graph.nodes.find((e) => e.nid === hash);
   };
@@ -182,9 +177,6 @@ export const GraphModel = (() => {
         csp_report: [],
         media: [],
       };
-    },
-    loadGraph(toLgraph) {
-      setLinksAndNodes(toLgraph.links, toLgraph.nodes);
     },
     addChunkToExistingGraph(chunks) {
       for (let chunk of chunks) {

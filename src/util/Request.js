@@ -1,18 +1,3 @@
-/* eslint-disable eqeqeq */
-// eslint-disable-next-line no-extend-native
-String.prototype.hashCode = function () {
-  var hash = 0,
-    i,
-    chr;
-  if (this.length === 0) return hash;
-  for (i = 0; i < this.length; i++) {
-    chr = this.charCodeAt(i);
-    hash = (hash << 5) - hash + chr;
-    hash |= 0;
-  }
-  return hash;
-};
-
 export default class Request {
   constructor(request) {
     this.requestHeaders = request["requestHeaders"];
@@ -29,7 +14,7 @@ export default class Request {
 
   getReferer() {
     if (this.requestHeaders) {
-      const refHeader = this.requestHeaders.find((e) => e.name == "Referer");
+      const refHeader = this.requestHeaders.find((e) => e.name === "Referer");
       return refHeader ? refHeader.value : undefined;
     } else {
       return undefined;
@@ -39,7 +24,7 @@ export default class Request {
   isRefered() {
     if (this.requestHeaders) {
       for (let header of this.requestHeaders) {
-        if (header.name == "Referer") {
+        if (header.name === "Referer") {
           return true;
         }
       }

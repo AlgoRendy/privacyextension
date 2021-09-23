@@ -10,13 +10,12 @@ import Tab from "@material-ui/core/Tab";
 import TabContext from "@material-ui/lab/TabContext";
 import TabList from "@material-ui/lab/TabList";
 import TabPanel from "@material-ui/lab/TabPanel";
-import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
-import { selectGraph } from "../../store/slices/graphSlice";
+import { useState } from "react";
 import { DataGrid } from "@material-ui/data-grid";
 import { GraphModel } from "../../util/graphModel";
 import { linkColor } from "../../util/constants";
-import CardStats from "@bit/creative-tim.argon-dashboard-react.card-stats";
+import StatCard from "../ui/StatCard";
+import TrackingFilter from "../ui/TrackingFilter";
 
 const nodeColumns = [
   { field: "name", headerName: "Domain", minWidth: 200, flex: 1 },
@@ -43,18 +42,11 @@ const linkColumns = [
 ];
 
 export default function Analitics() {
-  const graph = useSelector(selectGraph);
   const [value, setValue] = useState("stylesheet");
-  const [rerender, setRerender] = useState(false);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
-
-  useEffect(() => {
-    setRerender(!rerender);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [graph]);
 
   return (
     <div>
@@ -70,33 +62,34 @@ export default function Analitics() {
         justifyContent="center"
       >
         <Grid item xs={3}>
-          <CardStats
+          <StatCard
             style={{ marginTop: 20 }}
-            title="Nodes"
-            valueTotal={GraphModel.getTotalNodes()}
+            name="Nodes"
+            value={GraphModel.getTotalNodes()}
           />
         </Grid>
         <Grid item xs={3}>
-          <CardStats
+          <StatCard
             style={{ marginTop: 20 }}
-            title="Connections"
-            valueTotal={GraphModel.getTotalLinks()}
+            name="Connections"
+            value={GraphModel.getTotalLinks()}
           />
         </Grid>
         <Grid item xs={3}>
-          <CardStats
+          <StatCard
             style={{ marginTop: 20 }}
-            title="Easy Privacy Tracker"
-            valueTotal={GraphModel.getEasyPrivcay()}
+            name="EasyPrivacy Tracker"
+            value={GraphModel.getEasyPrivcay()}
           />
         </Grid>
         <Grid item xs={3}>
-          <CardStats
+          <StatCard
             style={{ marginTop: 20 }}
-            title="DuckDuckGo Tracker"
-            valueTotal={GraphModel.getDuckDuckGo()}
+            name="DuckDuckGo Tracker"
+            value={GraphModel.getDuckDuckGo()}
           />
         </Grid>
+        <TrackingFilter />
         <Grid item xs={12}>
           <Paper elevation={3}>
             <AppBar position="static">

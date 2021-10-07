@@ -182,7 +182,7 @@ export const GraphModel = (() => {
       for (let chunk of chunks) {
         const request = new Request(chunk);
         if (!request.getReferer()) continue;
-        const sourceDomain = new URL(request.getReferer()).host;
+        const sourceDomain = new URL(request.getInitiator()).host;
         const destinationDomain = new URL(request.url).host;
         if (
           (sourceDomain && !destinationDomain) ||

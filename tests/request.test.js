@@ -1,4 +1,4 @@
-import Request from "../src/util/request";
+import Request from "../src/model/request";
 
 // request from google.com to gstatic script
 const dummyRequest = {

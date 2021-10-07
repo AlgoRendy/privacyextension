@@ -8,7 +8,7 @@ import * as d3 from "d3";
 import { drag, zoom, tick } from "../../util/d3helper";
 import { useSelector } from "react-redux";
 import { selectFilter } from "../../store/slices/filterSlice";
-import { GraphModel } from "../../util/graphModel";
+import { GraphModel } from "../../model/graphModel";
 import { selectGraph } from "../../store/slices/graphSlice";
 import { selectSettings } from "../../store/slices/settingsSlice";
 

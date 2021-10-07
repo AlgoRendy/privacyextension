@@ -1,5 +1,6 @@
 export default class Request {
   constructor(request) {
+    this.initiator = request["initiator"];
     this.requestHeaders = request["requestHeaders"];
     this.frameId = request["frameId"];
     this.method = request["method"];
@@ -9,7 +10,7 @@ export default class Request {
     this.timeStamp = request["timeStamp"];
     this.type = request["type"];
     this.url = request["url"];
-    this.source = request["initiator"];
+    this.source = request["source"];
   }
 
   getReferer() {
@@ -19,6 +20,10 @@ export default class Request {
     } else {
       return undefined;
     }
+  }
+
+  getInitiator() {
+    return this.initiator;
   }
 
   isRefered() {

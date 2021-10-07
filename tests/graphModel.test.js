@@ -1,4 +1,4 @@
-import { GraphModel } from "../src/util/GraphModel";
+import { GraphModel } from "../src/model/graphModel";
 
 // request from google.com to gstatic script
 const dummyRequest = {

@@ -12,7 +12,7 @@ import TabList from "@material-ui/lab/TabList";
 import TabPanel from "@material-ui/lab/TabPanel";
 import { useState } from "react";
 import { DataGrid } from "@material-ui/data-grid";
-import { GraphModel } from "../../util/graphModel";
+import { GraphModel } from "../../model/graphModel";
 import { linkColor } from "../../util/constants";
 import StatCard from "../ui/StatCard";
 import TrackingFilter from "../ui/TrackingFilter";

@@ -24,7 +24,7 @@ import InputBase from "@material-ui/core/InputBase";
 import { ListSubheader } from "@material-ui/core";
 import { filterActions } from "../store/slices/filterSlice";
 import { useDispatch } from "react-redux";
-import { GraphModel } from "../util/graphModel";
+import { GraphModel } from "../model/graphModel";
 import { update_graph } from "../store/slices/graphSlice";
 import {
   AddPhotoAlternate,

@@ -30,18 +30,6 @@ const Requests = (() => {
     let chunkWrap = {};
     let currentId = Date.now();
     chunkWrap[currentId] = chunk;
-
-    chrome.storage.local.set(chunkWrap, () => {
-      chrome.storage.local.get("indexes", (result) => {
-        if (result.hasOwnProperty("indexes")) {
-          result.indexes.push(currentId);
-        } else {
-          result.indexes = [currentId];
-        }
-        chrome.storage.local.set(result, null);
-      });
-    });
-
     port && port.postMessage({ requests: requests });
   };
   return {

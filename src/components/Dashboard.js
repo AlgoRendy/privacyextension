@@ -193,7 +193,6 @@ export default function Dashboard() {
     uploadElement.click();
     uploadElement.onchange = () => {
       var files = uploadElement.files;
-      console.log(files);
       if (files.length <= 0) {
         return false;
       }
@@ -203,6 +202,7 @@ export default function Dashboard() {
         reader.readAsText(file, "UTF-8");
         reader.onload = function (evt) {
           GraphModel.importGraph(JSON.parse(evt.target.result));
+          dispatch(update_graph())
         };
         reader.onerror = function (evt) {
           alert("Error uploading File.");

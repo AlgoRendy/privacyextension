@@ -34,7 +34,6 @@ export const GraphModel = (() => {
       media: [],
     },
   };
-
   const domainName = (hostname) => hostname.split(".").slice(-2).join(".");
   const isTracker = (hostname, dataset) =>
     typeof dataset[domainName(hostname)] !== "undefined";

@@ -4,8 +4,7 @@
   "manifest_version": 2,
   "background": {
     "scripts": [
-      "Requests.js",
-      "background.js"
+      "index.js"
     ],
     "persistent": true
   },

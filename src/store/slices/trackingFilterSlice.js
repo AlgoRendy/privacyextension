@@ -6,6 +6,7 @@ export const trackingFilterSlice = createSlice({
     jsImplementation: {},
     manualImplmentation: {},
     currentActive: [],
+    labels: false
   },
   reducers: {
     add_jsImplementation: (state, action) => {

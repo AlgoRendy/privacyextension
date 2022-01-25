@@ -29,6 +29,7 @@ export const filterSlice = createSlice({
       OPTIONS: true,
       TRACE: true,
     },
+    labels: true,
   },
   reducers: {
     type_stylesheet: (state) => {
@@ -45,6 +46,9 @@ export const filterSlice = createSlice({
     },
     type_font: (state) => {
       state.type.font = !state.type.font;
+    },
+    toggle_labels: (state) => {
+      state.labels = !state.labels;
     },
     type_other: (state) => {
       state.type.other = !state.type.other;
@@ -116,6 +120,7 @@ export const {
   method_CONNECT,
   method_OPTIONS,
   method_TRACE,
+  toggle_labels
 } = filterSlice.actions;
 
 export const filterActions = filterSlice.actions;

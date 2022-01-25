@@ -65,7 +65,7 @@ export const settingsSlice = createSlice({
     },
     node_color_ntracking: (state, action) => {
       state.nodeColors.ntracking = action.payload;
-    },
+    }
   },
 });
 

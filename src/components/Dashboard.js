@@ -21,17 +21,19 @@ import Sidebar from "./ui/Sidebar";
 import Settings from "./pages/Settings";
 import Filterbar from "./ui/Filterbar";
 import InputBase from "@material-ui/core/InputBase";
-import { ListSubheader } from "@material-ui/core";
-import { filterActions } from "../store/slices/filterSlice";
-import { useDispatch } from "react-redux";
+import { ListSubheader, Switch } from "@material-ui/core";
+import { filterActions, selectFilter } from "../store/slices/filterSlice";
+import { useDispatch, useSelector } from "react-redux";
 import { GraphModel } from "../model/graphModel";
 import { update_graph } from "../store/slices/graphSlice";
 import {
   AddPhotoAlternate,
   ArrowDownward,
   ArrowUpward,
+  DeleteForever
 } from "@material-ui/icons";
 import { saveSvgAsPng } from "save-svg-as-png";
+import { toggle_labels } from "../store/slices/filterSlice";
 
 const drawerWidth = 240;
 
@@ -153,6 +155,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Dashboard() {
   const dispatch = useDispatch();
+  const filter = useSelector(selectFilter);
   const classes = useStyles();
   const [open, setOpen] = React.useState(true);
   const handleDrawerOpen = () => {
@@ -207,6 +210,10 @@ export default function Dashboard() {
       }
     };
   };
+  const deleteGraph = () => {
+    GraphModel.resetGraph()
+    dispatch(update_graph())
+  }
 
   return (
     <div className={classes.root}>
@@ -278,6 +285,14 @@ export default function Dashboard() {
           >
             <ArrowUpward />
           </IconButton>
+          <IconButton
+            color="inherit"
+            aria-label="delete current graph"
+            onClick={deleteGraph}
+          >
+            <DeleteForever />
+          </IconButton>
+          <Switch checked={filter.labels} onChange={()=> dispatch(toggle_labels())}></Switch>
         </Toolbar>
       </AppBar>
       <Drawer

@@ -40,12 +40,23 @@ export const colors = (range) => {
 // updates the diagram each frame
 export const tick = () => {
   d3.selectAll(".nodes")
-    .attr("cx", function (d) {
-      return d.x;
-    })
-    .attr("cy", function (d) {
-      return d.y;
-    });
+  .attr("transform", function(d) {
+    return "translate(" + d.x + "," + d.y + ")"
+  });
+    // .attr("cx", function (d) {
+    //   return d.x;
+    // })
+    // .attr("cy", function (d) {
+    //   return d.y;
+    // });
+    // d3.selectAll(".nodes")
+    // .selectAll("text")
+    // .attr("cx", function (d) {
+    //   return d.x;
+    // })
+    // .attr("cy", function (d) {
+    //   return d.y;
+    // });
 
   d3.selectAll("line")
     .attr("x1", function (d) {

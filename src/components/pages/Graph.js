@@ -46,19 +46,25 @@ export default function Graph({ isDebug = false }) {
       .links(
         Object.values(currentGraph.links).reduce((x, y) => x.concat(y), [])
       );
-    d3.select(".nodes-container")
-      .selectAll("circle")
+    let nodes = d3.select(".nodes-container")
+      .selectAll(".nodes")
       .data(currentGraph.nodes, (d) => d.nid)
-      .join("circle")
+      .join("g")
       .attr("class", "nodes")
+      .call(drag(simulation))
+    nodes.append("circle")
       .attr("r", (d) => d.in / 30 + 5)
       .attr("fill", function (d, i) {
         return isTracker(d)
           ? settings.nodeColors.tracking
           : settings.nodeColors.ntracking;
       })
-      .call(drag(simulation));
-
+    nodes.append("text")
+      .attr("class", "label")
+      .attr("dx", 4)
+      .attr("dy", 4)
+      .text(function(d) { return d.name })
+      
     for (let linkType of Object.keys(currentGraph.links)) {
       d3.select(".links-" + linkType)
         .selectAll("line")
@@ -70,6 +76,7 @@ export default function Graph({ isDebug = false }) {
           return settings.linkColors[linkType];
         })
         .attr("stroke-width", (d) => 1 + d.amt / 50)
+      
         .call(drag(simulation));
     }
     simulation.on("tick", tick);
@@ -93,6 +100,8 @@ export default function Graph({ isDebug = false }) {
       .filter((d) => !d.data.isFiltered(filter))
       .transition(500)
       .style("stroke-opacity", 0);
+    d3.selectAll(".label")
+      .style("opacity", filter.labels ? 1 : 0)
   }, [filter]);
 
   return (

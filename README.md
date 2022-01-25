@@ -1,29 +1,31 @@
-# Privacy Graph Extension
+# PrivacyExtension
 
+## Summary
 This project is created fro my bachelor thesis. You can use this extension to analyze your HTTP-requests in browsing sessions. You can also flag malicisous domains and block requests on simple metrics.
 
-## Available Scripts
+This extension can be used to display the user's web traffic in real-time. The traffic is represented within an HTTP-Referrer graph utilizing the Chrome API.
 
-In the project directory, you can run:
-
-### `npm start`
-
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
-
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
-It will start without a conncetion to the chrome extension. So it will only show dummy data.
-
-### `npm test`
-
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
-### `npm run build`
-
-Runs the build script and packs the extension into the dist folder
-
+Note that the code is not optimized yet.
 
 ## Installation
-To install the extension into chrome just run the `npm run build` command. And select the dist folder as extension in chrome. It should then run as expected.
+- **Required:** Chrome based Browser
+- Download the **latest version** [privacyextension_v0.5.0.zip](https://github.com/HenrySchwerdtner/privacyextension/files/7936406/privacyextension_v0.5.0.zip) file
+- unpack the file and go to your extension settings activate the developer option and click on install unzipped extension.
+- After that search for the unzipped folder 
+
+## Contribution
+- Feel free to make pull requests or fork the code
+- Feel free to add issues you want to be implemented
+
+## Source
+### Available Scripts
+
+To build the source files you need to run the `npm run build` script. This creates a **build** folder which can be used to install the extension within the Chrome based browser.
+
+#### Before further implementation
+- Keep in mind to install all the third-party libraries with `npm i`
+
+
+
+
+

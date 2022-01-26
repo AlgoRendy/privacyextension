@@ -7,6 +7,10 @@ This extension can be used to display the user's web traffic in real-time. The t
 
 Note that the code is not optimized yet.
 
+## Dependencies
+
+Great thanks to [@Philip-Raschke](https://github.com/philip-raschke) for helping me out with the web-monitoring implementation. Great inspiration is taken from [T.ex](https://github.com/philip-raschke/t.ex)
+
 ## Installation
 - **Required:** Chrome based Browser
 - Download the **latest version** [privacyextension_v0.5.0.zip](https://github.com/HenrySchwerdtner/privacyextension/files/7936406/privacyextension_v0.5.0.zip) file
